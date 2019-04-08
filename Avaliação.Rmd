@@ -1,0 +1,217 @@
+---
+title: "Avaliação de Machine Learning"
+output: html_notebook
+---
+
+Nome:Samuel Zoia de Jesus 
+
+Questão numero 8:
+
+a) Use a função lm () para executar uma regressão linear simples com mpg como a resposta e a potência como o preditor. Use a função summary () para imprimir os resultados.
+
+```{r echo=TRUE}
+library("ISLR")
+
+lm.fit <- lm(mpg ~ horsepower, data = Auto)
+summary (lm.fit)
+```
+
+b) Plote a resposta e o preditor. Use a função abline () para exibir a linha de regressão de mínimos quadrados.
+
+```{r}
+attach(Auto)
+plot(mpg~horsepower, main =" MPG vs Horsepower", xlab = " Horsepower", ylab ="MPG")
+abline(coef = coef(lm.fit), col ="red")
+```
+
+c) Use a função plot () para produzir plotagens de diagnóstico do ajuste de regressão de mínimos quadrados. Comente sobre quaisquer problemas que você vir com o ajuste.
+
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit)
+```
+
+O primeiro gráfico mostra um padrão (em forma de U) entre os resíduos e os valores ajustados. Isso indica um relacionamento não linear entre as variáveis preditor e resposta. O segundo gráfico mostra que os resíduos são normalmente distribuídos. O terceiro gráfico mostra que a variância dos erros é constante. Finalmente, o quarto gráfico indica que não há pontos de alavancagem nos dados.
+
+
+Questão número 9:
+
+a) Produza uma matriz de dispersão que inclua todas as variáveis no conjunto de dados.
+
+```{r}
+pairs(Auto)
+```
+
+b) Calcule a matriz de correlações entre as variáveis usando a função cor (). Você precisará excluir a variável de nome, que é qualitativa.
+
+```{r}
+  cor(Auto[, names(Auto) !="name"])
+```
+
+c) Use a função lm () para executar uma regressão linear múltipla com mpg como a resposta e todas as outras variáveis, exceto name como preditores. Use a função summary () para imprimir os resultados. Comente a saída. Por exemplo:
+
+```{r}
+model = lm(mpg ~. -name, data = Auto)
+summary(model)
+```
+
+
+. Existe uma relação entre os preditores e a resposta? Sim existe. No entanto, alguns preditores não têm um efeito estatisticamente significativo na resposta. O valor de R-quadrado implica que 82% das mudanças na resposta podem ser explicadas pelos preditores neste modelo de regressão.
+
+. Quais preditores parecem ter uma relação estatisticamente significativa com a resposta? deslocamento, peso, ano, origem.
+
+. O que sugere o coeficiente da variável ano? Quando cada outro preditor mantido constante, o valor de mpg aumenta a cada ano que passa. Especificamente, mpg aumenta em 1,43 a cada ano.
+
+
+d) Use a função plot () para produzir gráficos de diagnóstico do ajuste de regressão linear. Comente sobre quaisquer problemas que você vir com o ajuste. Os gráficos residuais sugerem algum valor atípico extraordinariamente grande? O gráfico de alavancagem identifica qualquer observação com alavancagem excepcionalmente alta?
+
+```{r}
+par(mfrow = c(2,2))
+plot(model)
+```
+
+
+O primeiro gráfico mostra que existe uma relação não linear entre o respondente e os preditores;
+O segundo gráfico mostra que os resíduos são normalmente distribuídos e inclinados para a direita;
+O terceiro gráfico mostra que a variância constante da suposição de erro não é verdadeira para esse modelo;
+O terceiro gráfico mostra que não há pontos de alavancagem. No entanto, há uma observação que se destaca como um potencial ponto de alavancagem.
+
+Questão número 10:
+
+a) Ajuste um modelo de regressão múltipla para prever vendas usando Preço, Urbano e EUA.
+
+```{r}
+
+lm.fit = lm(Sales ~ Price+Urban+US, data= Carseats)
+summary(lm.fit)
+```
+
+
+b) Forneça uma interpretação de cada coeficiente no modelo. Tenha cuidado - algumas das variáveis do modelo são qualitativas!
+
+Quando o preço aumenta em US 1.000 e outros preditores são mantidos constantes, as vendas diminuem em 54.459 unidades vendidas. Em outras palavras, quando o preço aumenta em $ 1000, o número de carros vendidos diminui em 54.459.
+
+A venda de uma loja não é afetada por estar ou não em uma área urbana.
+
+Uma loja nas vendas dos EUA 1200 mais carros (em média) do que uma loja que está no exterior.
+
+d) Para qual dos preditores você pode rejeitar a hipótese nula Ho: βj = 0?
+
+O preditor "Urbano". Seu valor de p não é estatisticamente significativo com um valor de 0,936.
+
+e) Com base na sua resposta à pergunta anterior, ajuste um modelo menor que use apenas os preditores para os quais há evidências de associação com o resultado.
+
+```{r}
+lm.fit2 = lm(Sales ~ Price+US, data= Carseats)
+summary(lm.fit2)
+```
+
+f) Quão bem os modelos em (a) e (e) se ajustam aos dados?
+
+Com base em seus respectivos valores de R-quadrado (em tabelas de resumo), esses dois modelos são medíocres (apenas 24% de mudança na resposta explicada).
+
+g) Usando o modelo de (e), obtenha intervalos de confiança de 95% para o(s) coeficiente(s).
+
+```{r}
+confint(lm.fit2)
+```
+
+h) Existe evidência de outliers ou observações de alta alavancagem no modelo de (e)?
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit2)
+```
+
+Com base no gráfico Normal.q-q e no gráfico Residuals vs Leverage, não há evidências de tais pontos.
+
+Questão número 10:
+
+a) Usando a função rnorm (), crie um vetor, x, contendo 100 observações extraídas de uma distribuição N (0, 1). Isso representa um recurso, X.
+
+```{r}
+ x = rnorm(100, mean= 0, sd =1)
+```
+
+b) Usando a função rnorm (), crie um vetor, eps, contendo 100 observações de uma distribuição N (0, 0,25), ou seja, uma distribuição normal com média zero e variância de 0,25.
+
+```{r}
+eps = rnorm(100, mean =0, sd = 0.25)
+```
+
+c) Usando x e eps, gere um vetor y de acordo com o modelo Y = −1 + 0.5X + eps. Qual é o comprimento do vetor y? Quais são os valores de βo e β1 neste modelo linear?
+
+```{r}
+x = rnorm(100, mean= 0, sd =1)
+eps = rnorm(100, mean =0, sd = 0.25)
+y = -1+0.5*x+eps
+length(y)
+```
+
+d) Crie um gráfico de dispersão exibindo o relacionamento entre x e y. Comente o que você observa.
+
+```{r}
+plot(y~x)
+```
+
+
+e) Ajuste um modelo linear de mínimos quadrados para prever y usando x. Comente sobre o modelo obtido. Como β ^ o e β ^ 1 se comparam com βo e β1?
+
+```{r}
+lm.fit1 = lm(y~x)
+summary(lm.fit1)
+```
+
+
+f) Exibe a linha de mínimos quadrados no gráfico de dispersão obtido em (d). Desenhe a linha de regressão de população na plotagem, em uma cor diferente. Use o comando legenda () para criar uma legenda apropriada
+
+```{r}
+plot(y~x); abline(lm.fit1, col ="red") 
+legend("bottomright", c("Regression line"), lwd=1, col="red",bty ="n")
+```
+
+g)_Ajuste um modelo de regressão polinomial que prevê y usando x e x ^ 2. Existe evidência de que o termo quadrático melhora o ajuste do modelo? Explique sua resposta.__
+
+```{r}
+lm.fit1 = lm(y~poly(x,2))
+summary(lm.fit1)
+```
+
+O coeficiente de regressão do termo quadrático não é estatisticamente significativo; Portanto, não há evidências de que o termo quadrático melhore o modelo.
+
+h) Repita (a) - (f) depois de modificar o processo de geração de dados de forma que haja menos ruído nos dados. O modelo (parte c) deve permanecer o mesmo. Você pode fazer isso diminuindo a variação da distribuição normal usada para gerar o termo de erro em (b). Descreva seus resultados
+
+```{r}
+x = rnorm(100, mean= 0, sd =1)
+eps = rnorm(100, mean =0, sd = 0.10)
+y = -1+0.5*x+eps
+lm.fit2 = lm(y~x)
+summary(lm.fit2)
+```
+
+```{r}
+plot(y~x); abline(lm.fit2, col ="red") 
+legend("bottomright", c("Regression line"), lwd=1, col="red",bty ="n")
+```
+
+```{r}
+lm.fit2 = lm(y~poly(x,2))
+summary(lm.fit2)
+```
+
+
+R-quadrado = 0,95 mostra que este modelo se ajusta melhor aos dados.
+A observação em (1) é evidenciada graficamente por quão bem a linha de regressão se ajusta aos pontos de dados.
+O termo quadrático é, novamente, estatisticamente insignificante.
+
+i) Repita (a) - (f) depois de modificar o processo de geração de dados de forma que haja menos ruído nos dados. O modelo (em parte-c) deve permanecer o mesmo. Você pode fazer isso diminuindo a variação da distribuição normal usada para gerar o termo de erro em (b). Descreva seus resultados.
+
+```{r}
+x = rnorm(100, mean= 0, sd =1)
+eps = rnorm(100, mean =0, sd = 0.50)
+y = -1+0.5*x+eps
+lm.fit3 = lm(y~x)
+summary(lm.fit3)
+```
+
+
+
